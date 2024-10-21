@@ -1,0 +1,19 @@
+{
+    "en": {
+        "errorCode": {
+            "101": "Something went wrong",
+            "102": "Details Not Found",
+            "103": "Type Not Found",
+            "104": "Detail Not Saved",
+            "105": "Captcha Verification Failed",
+            "106": "Detail Not Updated",
+            "107": "Data Not Found",
+            "108": "Image Not Deleted",
+            "109": "Provide Valid Id For Authorization In Header",
+            "201": "User Not Created"
+        },
+        "successCode": {
+            "101": "User Created Successfully"
+        }
+    }
+}
