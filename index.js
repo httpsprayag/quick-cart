@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("./configs/express");
 const logger = require("./configs/logger");
 const app = express();
+require("./configs/dbConnection");
 
 global.logger = logger;
 
