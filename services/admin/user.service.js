@@ -1,67 +1,107 @@
 const User = require("../../models/admin/User");
-
 const utils = require("../../utils/utils");
-const commonService = require("../../services/common/common.service");
+const { USER_ERROR_CODE } = require("../../utils/errorCode");
 
-exports.createUser = async (req) => {
-  utils.checkRequestParams(req.body, [
-    { name: "userName", type: "string" },
-    { name: "email", type: "string" },
-    { name: "password", type: "string" },
-  ]);
-
-  const user = new User(req.body);
-  console.log("user in service  => ", user);
+// Create a new user
+const createUser = async (req) => {
   try {
+    utils.checkRequestParams(req.body, [
+      { name: "userName", type: "string" },
+      { name: "email", type: "string" },
+      { name: "password", type: "string" },
+    ]);
+
+    const { userName, email, password } = req.body;
+
+    // Check if email or username already exists
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      throw { errorCode: USER_ERROR_CODE.EMAIL_ALREADY_TAKEN };
+    }
+
+    const existingUsername = await User.findOne({ userName });
+    if (existingUsername) {
+      throw { errorCode: USER_ERROR_CODE.USERNAME_ALREADY_TAKEN };
+    }
+
+    // Create and save the user
+    const user = new User({ userName, email, password });
     return await user.save();
   } catch (error) {
     throw error;
   }
 };
 
-exports.getUserById = async (userId) => {
+// Retrieve user by ID
+const getUserById = async (req) => {
   try {
-    const user = await User.findById(userId);
+    utils.checkRequestParams(req.body, [{ name: "id", type: "string" }]);
+    const { id } = req.body;
+
+    const user = await User.findById(id);
     if (!user) {
-      throw new Error("User not found");
+      throw { errorCode: USER_ERROR_CODE.USER_DETAILS_NOT_FOUND };
     }
+
     return user;
   } catch (error) {
-    throw new Error("Error fetching user: " + error.message);
+    throw error;
   }
 };
 
-exports.updateUser = async (userId, data) => {
+// Update user details by ID
+const updateUser = async (req) => {
   try {
-    const user = await User.findByIdAndUpdate(userId, data, {
+    utils.checkRequestParams(req.body, [
+      { name: "id", type: "string" },
+    ]);
+
+    const { id, ...updateData } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     });
-    if (!user) {
-      throw new Error("User not found");
+    if (!updatedUser) {
+      throw { errorCode: USER_ERROR_CODE.FAILED_TO_UPDATE_USER };
     }
-    return user;
+
+    return updatedUser;
   } catch (error) {
-    throw new Error("Error updating user: " + error.message);
+    throw error;
   }
 };
 
-exports.deleteUser = async (userId) => {
+// Delete user by ID
+const deleteUser = async (req) => {
   try {
-    const user = await User.findByIdAndDelete(userId);
-    if (!user) {
-      throw new Error("User not found");
+    utils.checkRequestParams(req.body, [{ name: "id", type: "string" }]);
+    const { id } = req.body;
+
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
+      throw { errorCode: USER_ERROR_CODE.FAILED_TO_DELETE_USER };
     }
-    return user;
+
+    return { message: "User deleted successfully" };
   } catch (error) {
-    throw new Error("Error deleting user: " + error.message);
+    throw error;
   }
 };
 
-exports.getAllUsers = async () => {
+// Retrieve all users
+const getAllUsers = async () => {
   try {
     return await User.find();
   } catch (error) {
-    throw new Error("Error fetching users: " + error.message);
+    throw error;
   }
+};
+
+module.exports = {
+  createUser,
+  getUserById,
+  updateUser,
+  deleteUser,
+  getAllUsers,
 };

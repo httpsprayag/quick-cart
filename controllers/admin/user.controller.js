@@ -7,7 +7,6 @@ const createUser = async (req, res) => {
   try {
     const user = await userService.createUser(req);
     if (!user) throw { errorCode: USER_ERROR_CODE.USER_NOT_CREATED };
-    console.log("user => : ", user);
     utils.successResponse(
       req.headers.lang,
       USER_MESSAGE_CODE.USER_CREATED_SUCCESSFULLY,
@@ -21,61 +20,69 @@ const createUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const user = await userService.getUserById(req.params.id);
-    return res.status(200).json({
-      success: true,
-      data: user,
-    });
+    const user = await userService.getUserById(req);
+    if (!user) {
+      throw { errorCode: USER_ERROR_CODE.USER_DETAILS_NOT_FOUND };
+    }
+    utils.successResponse(
+      req.headers.lang,
+      USER_MESSAGE_CODE.USER_CREATED_SUCCESSFULLY,
+      user,
+      res
+    );
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    utils.catchBlockErrors(req.headers.lang, error, res);
   }
 };
 
 const updateUser = async (req, res) => {
   try {
-    const user = await userService.updateUser(req.params.id, req.body);
-    return res.status(200).json({
-      success: true,
-      data: user,
-    });
+    const user = await userService.updateUser(req);
+    if (!user) {
+      throw { errorCode: USER_ERROR_CODE.FAILED_TO_UPDATE_USER };
+    }
+    utils.successResponse(
+      req.headers.lang,
+      USER_MESSAGE_CODE.USER_DETAILS_UPDATED_SUCCESSFULLY,
+      user,
+      res
+    );
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    utils.catchBlockErrors(req.headers.lang, error, res);
   }
 };
 
 const deleteUser = async (req, res) => {
   try {
-    const user = await userService.deleteUser(req.params.id);
-    return res.status(200).json({
-      success: true,
-      data: user,
-    });
+    const user = await userService.deleteUser(req);
+    if (!user) {
+      throw { errorCode: USER_ERROR_CODE.FAILED_TO_DELETE_USER };
+    }
+    utils.successResponse(
+      req.headers.lang,
+      USER_MESSAGE_CODE.USER_DELETED_SUCCESSFULLY,
+      user,
+      res
+    );
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    utils.catchBlockErrors(req.headers.lang, error, res);
   }
 };
 
 const getAllUsers = async (req, res) => {
   try {
     const users = await userService.getAllUsers();
-    return res.status(200).json({
-      success: true,
-      data: users,
-    });
+    if (!users) {
+      throw { errorCode: USER_ERROR_CODE.FAILED_TO_RETRIVE_USERS };
+    }
+    utils.successResponse(
+      req.headers.lang,
+      USER_MESSAGE_CODE.USERS_RETRIVED_SUCCESSFULLY,
+      user,
+      res
+    );
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    utils.catchBlockErrors(req.headers.lang, error, res);
   }
 };
 

@@ -10,10 +10,21 @@
             "107": "Data Not Found",
             "108": "Image Not Deleted",
             "109": "Provide Valid Id For Authorization In Header",
-            "201": "User Not Created"
+            "201": "User Not Created",
+            "202": "Email Already Taken",
+            "203": "UserName Already Taken",
+            "204": "User Details Not Found",
+            "205": "Failed To Update The User",
+            "206": "Failed To Delete The User",
+            "207": "Failed To Retrive The Users",
+            "301": "Product Already Exists"
         },
         "successCode": {
-            "101": "User Created Successfully"
+            "101": "User Created Successfully",
+            "102": "User Details Retrived Successfully",
+            "103": "User Updated Successfully",
+            "104": "User Deleted Suceessfully",
+            "105": "Users Retrived Successfully"
         }
     }
 }
